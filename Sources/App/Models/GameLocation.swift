@@ -1,5 +1,5 @@
 import Vapor
-import FluentSQLite
+import FluentPostgreSQL
 
 final class GameLocation: Codable {
     var id: Int?
@@ -15,6 +15,6 @@ final class GameLocation: Codable {
 
 }
 
-extension GameLocation: SQLiteModel {}
+extension GameLocation: PostgreSQLModel {}
 extension GameLocation: Migration {}
 extension GameLocation: Content {}
