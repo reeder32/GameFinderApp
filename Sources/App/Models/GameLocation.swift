@@ -18,3 +18,4 @@ final class GameLocation: Codable {
 extension GameLocation: PostgreSQLModel {}
 extension GameLocation: Migration {}
 extension GameLocation: Content {}
+extension GameLocation: Parameter {}
