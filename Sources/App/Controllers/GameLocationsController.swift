@@ -12,7 +12,7 @@ struct GameLocationsController: RouteCollection {
         gameLocationsRoutes.get("search", use: searchHandler)
         gameLocationsRoutes.get("first", use: getFirstHandler)
         gameLocationsRoutes.get("sorted", use: sortHandler)
-        gameLocationsRoutes.get(GameLocation.parameter, "game", use: getGameHandler)
+        gameLocationsRoutes.get(GameLocation.parameter, "game", use: getGamesHandler)
 
     }
 
@@ -39,7 +39,7 @@ struct GameLocationsController: RouteCollection {
                             gameLocation.name = updatedGameLocation.name
                             gameLocation.lat = updatedGameLocation.lat
                             gameLocation.long = updatedGameLocation.long
-                            //gameLocation.gameID = updatedGameLocation.gameID
+                            
 
                             return gameLocation.save(on: req)
         }
@@ -77,11 +77,10 @@ struct GameLocationsController: RouteCollection {
             .all()
     }
 
-    // Get game from game location
-    func getGameHandler(_ req: Request) throws -> Future<Game> {
+    func getGamesHandler(_ req: Request) throws -> Future<[Game]> {
         return try req.parameters.next(GameLocation.self)
-            .flatMap(to: Game.self) { location in
-                location.game.get(on: req)
+            .flatMap(to: [Game].self) { location in
+                try location.games.query(on: req).all()
         }
     }
 }
