@@ -5,17 +5,24 @@ struct GameLocationsController: RouteCollection {
     func boot(router: Router) throws {
         let gameLocationsRoutes = router.grouped("api", "gameLocations")
         gameLocationsRoutes.get(use: getAllHandler)
-        gameLocationsRoutes.post(use: getHandler)
         gameLocationsRoutes.get(GameLocation.parameter, use: getHandler)
         gameLocationsRoutes.put(GameLocation.parameter, use: updateHandler)
         gameLocationsRoutes.post(GameLocation.self, use: createHandler)
+        gameLocationsRoutes.delete(GameLocation.parameter, use: deleteHandler)
+        gameLocationsRoutes.get("search", use: searchHandler)
+        gameLocationsRoutes.get("first", use: getFirstHandler)
+        gameLocationsRoutes.get("sorted", use: sortHandler)
+        gameLocationsRoutes.get(GameLocation.parameter, "game", use: getGameHandler)
+
+    }
+
+
+    func createHandler(_ req: Request, gameLocation: GameLocation)  throws ->Future<GameLocation> {
+       return gameLocation.save(on: req)
     }
 
     func getAllHandler(_ req: Request) throws -> Future<[GameLocation]> {
         return GameLocation.query(on: req).all()
-    }
-    func createHandler(_ req: Request, gameLocation: GameLocation)  throws ->Future<GameLocation> {
-       return gameLocation.save(on: req)
     }
 
     // Get one game location
@@ -32,6 +39,7 @@ struct GameLocationsController: RouteCollection {
                             gameLocation.name = updatedGameLocation.name
                             gameLocation.lat = updatedGameLocation.lat
                             gameLocation.long = updatedGameLocation.long
+                            //gameLocation.gameID = updatedGameLocation.gameID
 
                             return gameLocation.save(on: req)
         }
@@ -67,5 +75,13 @@ struct GameLocationsController: RouteCollection {
         return GameLocation.query(on: req)
             .sort(\.name, .ascending)
             .all()
+    }
+
+    // Get game from game location
+    func getGameHandler(_ req: Request) throws -> Future<Game> {
+        return try req.parameters.next(GameLocation.self)
+            .flatMap(to: Game.self) { location in
+                location.game.get(on: req)
+        }
     }
 }
