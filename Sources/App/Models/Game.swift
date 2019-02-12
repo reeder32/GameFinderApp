@@ -6,11 +6,9 @@ final class Game: Codable {
     var id: UUID?
     var date: Date
     var users: [User]?
-    var gameLocationID: GameLocation.ID
 
-    init(date: Date, gameLocationID: GameLocation.ID) {
+    init(date: Date) {
         self.date = date
-        self.gameLocationID = gameLocationID
     }
 }
 

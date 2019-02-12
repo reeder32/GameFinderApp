@@ -26,7 +26,6 @@ struct GamesController: RouteCollection {
         return try flatMap(to: Game.self, req.parameters.next(Game.self), req.content.decode(Game.self))
         { game, updatedGame in
             game.date = updatedGame.date
-            game.gameLocationID = updatedGame.gameLocationID
             return game.save(on: req)
         }
     }

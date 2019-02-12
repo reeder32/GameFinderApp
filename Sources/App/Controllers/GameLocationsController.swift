@@ -39,7 +39,6 @@ struct GameLocationsController: RouteCollection {
                             gameLocation.lat = updatedGameLocation.lat
                             gameLocation.long = updatedGameLocation.long
                             
-
                             return gameLocation.save(on: req)
         }
     }

@@ -8,13 +8,11 @@ final class GameLocation: Codable {
     var name: String
     var lat: Double
     var long: Double
-    var UUID: UUID?
-
+    
     init(name: String, lat: Double, long: Double) {
         self.name = name
         self.lat = lat
         self.long = long
-       
     }
 
 }
