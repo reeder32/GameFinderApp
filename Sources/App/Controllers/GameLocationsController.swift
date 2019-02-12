@@ -12,6 +12,7 @@ struct GameLocationsController: RouteCollection {
         gameLocationsRoutes.get("search", use: searchHandler)
         gameLocationsRoutes.get("first", use: getFirstHandler)
         gameLocationsRoutes.get("sorted", use: sortHandler)
+        gameLocationsRoutes.get(GameLocation.parameter, "games", use: getGamesHandler)
 
     }
 
@@ -73,5 +74,13 @@ struct GameLocationsController: RouteCollection {
         return GameLocation.query(on: req)
             .sort(\.name, .ascending)
             .all()
+    }
+
+    func getGamesHandler(_ req: Request) throws -> Future<[Game]> {
+        return try req
+        .parameters.next(GameLocation.self)
+            .flatMap(to: [Game].self) { location in
+            try location.games.query(on: req).all()
+        }
     }
 }
