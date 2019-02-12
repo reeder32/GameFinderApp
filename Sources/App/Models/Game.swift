@@ -16,24 +16,6 @@ final class Game: Codable {
 
 extension Game: PostgreSQLUUIDModel {}
 extension Game: Content {}
-
 extension Game: Parameter {}
-
-extension Game {
-    var gameLocation: Parent <Game, GameLocation> {
-        return parent(\.gameLocationID)
-    }
-}
-
-extension Game: Migration {
-    static func prepare(
-        on connection: PostgreSQLConnection
-        ) -> Future<Void> {
-        return Database.create(self, on: connection)
-        { builder in
-            try addProperties(to: builder)
-            builder.reference(from: \.gameLocationID, to: \GameLocation.id)
-        }
-    }
-}
+extension Game: Migration {}
 
