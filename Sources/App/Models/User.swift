@@ -19,3 +19,14 @@ final class User: Codable {
         self.username = username
     }
 }
+
+extension User: PostgreSQLUUIDModel {}
+extension User: Content {}
+extension User: Migration {}
+extension User: Parameter {}
+
+extension User {
+    var gameLocations: Children <User, GameLocation> {
+        return children(\.userID)
+    }
+}

@@ -13,12 +13,13 @@ struct GameLocationsController: RouteCollection {
         gameLocationsRoutes.get("first", use: getFirstHandler)
         gameLocationsRoutes.get("sorted", use: sortHandler)
         gameLocationsRoutes.get(GameLocation.parameter, "games", use: getGamesHandler)
+        gameLocationsRoutes.get(GameLocation.parameter, "user", use: getUserHandler)
 
     }
 
 
     func createHandler(_ req: Request, gameLocation: GameLocation)  throws ->Future<GameLocation> {
-       return gameLocation.save(on: req)
+        return gameLocation.save(on: req)
     }
 
     func getAllHandler(_ req: Request) throws -> Future<[GameLocation]> {
@@ -39,7 +40,7 @@ struct GameLocationsController: RouteCollection {
                             gameLocation.name = updatedGameLocation.name
                             gameLocation.lat = updatedGameLocation.lat
                             gameLocation.long = updatedGameLocation.long
-                            
+                            gameLocation.userID = updatedGameLocation.userID
                             return gameLocation.save(on: req)
         }
     }
@@ -78,9 +79,17 @@ struct GameLocationsController: RouteCollection {
 
     func getGamesHandler(_ req: Request) throws -> Future<[Game]> {
         return try req
-        .parameters.next(GameLocation.self)
+            .parameters.next(GameLocation.self)
             .flatMap(to: [Game].self) { location in
-            try location.games.query(on: req).all()
+                try location.games.query(on: req).all()
+        }
+    }
+
+    func getUserHandler(_ req: Request) throws -> Future<User> {
+        return try req
+            .parameters.next(GameLocation.self)
+            .flatMap(to: User.self) { location in
+                location.user.get(on: req)
         }
     }
 }
