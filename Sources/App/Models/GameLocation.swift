@@ -37,6 +37,7 @@ extension GameLocation {
 
 extension GameLocation: Migration {
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+        
         return Database.create(self, on: connection)
         { builder in
             try addProperties(to: builder)
