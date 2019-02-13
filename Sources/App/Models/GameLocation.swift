@@ -36,26 +36,15 @@ extension GameLocation {
 }
 
 extension GameLocation: Migration {
-    typealias Database = PostgreSQLDatabase
 
-    static func prepare(on conn: PostgreSQLConnection) -> Future<Void> {
-        return Database.create(GameLocation.self, on: conn) { builder in
+    static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+
+        return Database.create(self, on: connection)
+        { builder in
             try addProperties(to: builder)
-            builder.reference(from: \.userID, to: \User.id)
+           builder.reference(from: \.userID, to: \User.id)
         }
     }
-
-    static func revert(on connection: PostgreSQLConnection) -> Future<Void> {
-        return Database.delete(GameLocation.self, on: connection)
-    }
-//    static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
-//
-//        return Database.create(self, on: connection)
-//        { builder in
-//            try addProperties(to: builder)
-//           builder.reference(from: \.userID, to: \User.id)
-//        }
-//    }
 }
 
 
